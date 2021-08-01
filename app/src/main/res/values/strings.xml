@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- frame_1 strings -->
+
+
+	<string name="app_name">Bikeroons</string>
+
+	<string name="map_key">AIzaSyAgS3JP52XcB7rlJe4UMfuU7vevTqd2JVs</string>
+
+	<string name="ngrok">https://c347bb98efe4.ngrok.io</string>
+	<string name="ngrok2">https://df8489f8244a.ngrok.io</string>
+
+</resources>

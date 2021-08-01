@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:text="save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cancel" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="7dp"
+        android:text="cancel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/save"
+        app:layout_constraintEnd_toStartOf="@+id/save"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/hour"
+        android:layout_width="0dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:hint="HH"
+        android:inputType="time"
+        android:maxLength="2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/colon"
+        app:layout_constraintEnd_toStartOf="@+id/colon"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/minute"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="7dp"
+        android:ems="10"
+        android:hint="MM"
+        android:inputType="time"
+        android:maxLength="2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/colon"
+        app:layout_constraintEnd_toStartOf="@+id/colon2"
+        app:layout_constraintStart_toEndOf="@+id/colon" />
+
+    <EditText
+        android:id="@+id/second"
+        android:layout_width="0dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="51dp"
+        android:ems="10"
+        android:hint="SS"
+        android:inputType="time"
+        android:maxLength="2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/colon2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/colon2" />
+
+    <TextView
+        android:id="@+id/colon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text=":"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/minute"
+        app:layout_constraintStart_toEndOf="@+id/hour"
+        app:layout_constraintTop_toTopOf="@+id/colon2" />
+
+
+    <TextView
+        android:id="@+id/colon2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="72dp"
+        android:text=":"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintEnd_toStartOf="@+id/second"
+        app:layout_constraintStart_toEndOf="@+id/minute" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- frame_1 colors -->
+
+	<color name="colorPrimary">#008577</color>
+	<color name="colorPrimaryDark">#00574B</color>
+	<color name="colorAccent">#D81B60</color>
+
+	<color name="purple">#850CB1</color>
+	<color name="purple_500">#BF0A0A</color>
+	<color name="purple_200">#BF0A0A</color>
+	<color name="purple_700">#AC0707</color>
+	<color name="white">#FFFFFF</color>
+	<color name="yellow">#FFFF00</color>
+	<color name="teal_200">#40E0D0</color>
+	<color name="teal_700">#CAE7E4</color>
+
+	<color name="blue">#D0001CA1</color>
+	<color name="black">#000000</color>
+	<color name="cool">#4EC305</color>
+	<color name="green">#1E6001</color>
+	<color name="green2">#43A838</color>
+	<color name="red">#BFA80B0B</color>
+
+
+	<color name="_bg__iphone_11_pro_max___1_ek2_color">#FFFFFF</color>
+	<color name="rectangle_9_color">#FFDA50</color>
+	<color name="_rectangle_10_color">#FAFAFA</color>
+	<color name="my_bike_color">#000000</color>
+	<color name="_bg__iphone_11_pro_max___3_ek2_color">#4EF4E4</color>
+	<color name="rectangle_23_color">#EAEE35</color>
+	<color name="rectangle_23_ek2_color">#FB5353</color>
+	<color name="rectangle_23_ek4_color">#00EF27</color>
+</resources>

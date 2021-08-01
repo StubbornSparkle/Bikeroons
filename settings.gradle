@@ -1,0 +1,6 @@
+include ':mylibrary'
+include ':jsoup-1.13.1'
+include ':jsch-0.1.52'
+include ':jsch-0.1.42'
+include ':app'
+rootProject.name = "Figma"
