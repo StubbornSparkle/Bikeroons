@@ -198,6 +198,8 @@ public class chooseBike_activity extends AppCompatActivity {
             blurBackground();
             blur.setVisibility(View.VISIBLE);
 
+            Log.d("nshof", "heehee");
+
             loading = (View) findViewById(R.id.loading);
             loading.setVisibility(View.VISIBLE);
             blur.setVisibility(View.VISIBLE);
@@ -249,8 +251,9 @@ public class chooseBike_activity extends AppCompatActivity {
 
 
             locateRealBikes lrb = new locateRealBikes();
-            lrb.doInBackground();
+            lrb.execute();
 
+            Log.d("garab kda","lolli");
             final Handler handlerr = new Handler();
             handlerr.postDelayed(new Runnable() {
                 @Override
@@ -513,7 +516,8 @@ public class chooseBike_activity extends AppCompatActivity {
 
                 fullRes = responsee.body().string();
 
-                onPostExecute("");
+                Log.d("garab kda", fullRes);
+
             } catch (Exception e) {
 
                 e.printStackTrace();

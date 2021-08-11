@@ -110,6 +110,11 @@
 			android:configChanges="orientation"
 			android:screenOrientation="portrait" />
 
+
+		<activity android:name="exportkit.xd.forgotPassword_activity"
+			android:configChanges="orientation"
+			android:screenOrientation="portrait" />
+
 		<service android:name=".LocationService"/>
 		<uses-library android:name="org.apache.http.legacy" android:required="false" />
 	</application>

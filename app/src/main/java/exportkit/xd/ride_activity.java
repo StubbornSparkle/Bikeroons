@@ -410,7 +410,7 @@ public class ride_activity extends Activity implements Serializable {
                 handleeer.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        accident = false;
+                        accident = true;
                         //startActivity(new Intent(ride_activity.this, accident_activity.class));
                         if(accident){
                             int LAUNCH_SECOND_ACTIVITY = 1;
@@ -420,6 +420,7 @@ public class ride_activity extends Activity implements Serializable {
                     }
                 }, 6000);
 
+                Log.d("nshof", "loooool");
 
                 accidentTest = (Button) findViewById(R.id.accident);
                 accidentTest.setOnClickListener(new View.OnClickListener() {

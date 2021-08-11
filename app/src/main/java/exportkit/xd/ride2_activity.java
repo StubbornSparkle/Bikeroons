@@ -80,7 +80,7 @@ import okhttp3.Response;
 
 public class ride2_activity extends Activity implements Serializable {
 
-    private Button myLoc;
+    private Button myLoc, accidentTest;
 
     private MapView map;
     private double myx;
@@ -209,6 +209,8 @@ public class ride2_activity extends Activity implements Serializable {
 
             dest = (GeoPoint) getIntent().getSerializableExtra("dest");
             btnResume = (Button) findViewById(R.id.resumeride);
+            btnResume.setVisibility(View.GONE);
+
             btnStop = (Button) findViewById(R.id.endRide);
             btnPause = (Button) findViewById(R.id.pauseRide);
             myLoc = (Button) findViewById(R.id.loc);
@@ -324,6 +326,16 @@ public class ride2_activity extends Activity implements Serializable {
             });
 
 
+            accidentTest = (Button) findViewById(R.id.accident);
+            accidentTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int LAUNCH_SECOND_ACTIVITY = 1;
+                    Intent i = new Intent(ride2_activity.this, accident_activity.class);
+                    startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);
+                }
+            });
+
             resumelight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -389,8 +401,6 @@ public class ride2_activity extends Activity implements Serializable {
             });
 
             goal = (TextView) findViewById(R.id.goal);
-
-
 
             final Handler handler = new Handler();
             Timer timer = new Timer();
@@ -463,8 +473,6 @@ public class ride2_activity extends Activity implements Serializable {
             }
         }
     }
-
-
 
 
 

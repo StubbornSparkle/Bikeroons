@@ -79,7 +79,7 @@ import okhttp3.Response;
 
 public class workoutRide2_activity extends Activity implements Serializable {
 
-    private Button myLoc;
+    private Button myLoc, accidentTest;
 
     private MapView map;
     private double myx;
@@ -431,6 +431,19 @@ public class workoutRide2_activity extends Activity implements Serializable {
                     }
                 }
             });
+
+
+            accidentTest = (Button) findViewById(R.id.accident);
+            accidentTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int LAUNCH_SECOND_ACTIVITY = 1;
+                    Intent i = new Intent(workoutRide2_activity.this, accident_activity.class);
+                    startActivityForResult(i, LAUNCH_SECOND_ACTIVITY);
+                }
+            });
+
+
 
             goal = (TextView) findViewById(R.id.goal);
 

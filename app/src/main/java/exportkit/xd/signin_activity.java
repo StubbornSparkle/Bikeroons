@@ -50,6 +50,9 @@ public class signin_activity extends Activity {
     private EditText email, password;
 
     private String[] arr = new String[2];
+
+    private Button forgot;
+
    // private String emaill, passwordd;
 
     @Override
@@ -96,6 +99,15 @@ public class signin_activity extends Activity {
 
             email = (EditText) findViewById(R.id.email);
             password = (EditText) findViewById(R.id.password);
+
+            forgot = (Button) findViewById(R.id.forgot);
+            forgot.setVisibility(View.GONE);
+            forgot.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(signin_activity.this, forgotPassword_activity.class));
+                }
+            });
 
 
             signinBtn.setOnClickListener(new View.OnClickListener() {

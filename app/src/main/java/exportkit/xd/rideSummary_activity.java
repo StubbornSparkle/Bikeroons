@@ -170,8 +170,14 @@ public class rideSummary_activity extends Activity {
             });
 
 
-            mapController = map.getController();
-            mapController.setZoom(15.0);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    mapController = map.getController();
+                    mapController.setZoom(15.0);
+                }
+            });
             return null;
         }
         @Override

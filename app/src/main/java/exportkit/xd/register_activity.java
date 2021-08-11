@@ -389,7 +389,6 @@ public class register_activity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         emailAddress.setError("This e-mail is taken!");
                     }
                 });
