@@ -248,7 +248,7 @@ public class register_activity extends Activity {
                     // Add your data
                     String fname = params[1];
                     String lname = params[2];
-                    String email = params[3];
+                    String email = params[3].toLowerCase();
                     String password = params[4];
 
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();

@@ -237,12 +237,6 @@ public class workout_activity extends Activity {
                     Toast.makeText(popupView.getContext(), "You haven't picked a time goal!", Toast.LENGTH_SHORT);
                 } else {
 
-
-
-                    //TODO TEST ACTIVIRT IS USED INSTEAD OF WORKOUT RIDE ACTIVITY, TAKE CARE
-
-
-
                     Intent intent = new Intent(workout_activity.this, workoutRide_activity.class);
 
                     if((boolean)getIntent().getSerializableExtra("shared")){

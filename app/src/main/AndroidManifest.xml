@@ -74,11 +74,7 @@
 			android:configChanges="orientation"
 			android:screenOrientation="portrait" />
 
-		<activity android:name="exportkit.xd.chooseDestination3_activity"
-			android:configChanges="orientation"
-			android:screenOrientation="portrait" />
-
-        <activity android:name="exportkit.xd.rideSummary_activity"
+		<activity android:name="exportkit.xd.rideSummary_activity"
 			android:configChanges="orientation"
 			android:screenOrientation="portrait" />
 
@@ -112,6 +108,10 @@
 
 
 		<activity android:name="exportkit.xd.forgotPassword_activity"
+			android:configChanges="orientation"
+			android:screenOrientation="portrait" />
+
+		<activity android:name="exportkit.xd.changePassword_activity"
 			android:configChanges="orientation"
 			android:screenOrientation="portrait" />
 
