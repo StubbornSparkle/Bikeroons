@@ -67,6 +67,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,10 +169,20 @@ public class chooseBike_activity extends AppCompatActivity {
         startActivity(new Intent(chooseBike_activity.this, start_activity.class));
     }
 
-    public boolean internetIsConnected() {
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    public boolean isInternetAvailable() {
         try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }
@@ -182,7 +193,7 @@ public class chooseBike_activity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);

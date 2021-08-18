@@ -7,90 +7,108 @@
     android:orientation="vertical">
 
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="8dp"
         android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancel" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/cancel"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="7dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
         android:text="cancel"
-        app:layout_constraintBaseline_toBaselineOf="@+id/save"
-        app:layout_constraintEnd_toStartOf="@+id/save"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/hour"
-        android:layout_width="0dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="58dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="HH"
-        android:inputType="time"
-        android:maxLength="2"
-        app:layout_constraintBaseline_toBaselineOf="@+id/colon"
-        app:layout_constraintEnd_toStartOf="@+id/colon"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/minute"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="7dp"
-        android:ems="10"
-        android:hint="MM"
-        android:inputType="time"
-        android:maxLength="2"
-        app:layout_constraintBaseline_toBaselineOf="@+id/colon"
-        app:layout_constraintEnd_toStartOf="@+id/colon2"
-        app:layout_constraintStart_toEndOf="@+id/colon" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/hour"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/second"
-        android:layout_width="0dp"
-        android:layout_height="47dp"
-        android:layout_marginEnd="51dp"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
         android:ems="10"
         android:hint="SS"
         android:inputType="time"
         android:maxLength="2"
-        app:layout_constraintBaseline_toBaselineOf="@+id/colon2"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/hour"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toEndOf="@+id/colon2" />
 
-    <TextView
-        android:id="@+id/colon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:text=":"
-        android:textColor="@color/black"
-        android:textSize="30dp"
-        app:layout_constraintEnd_toStartOf="@+id/minute"
-        app:layout_constraintStart_toEndOf="@+id/hour"
-        app:layout_constraintTop_toTopOf="@+id/colon2" />
-
+    <EditText
+        android:id="@+id/hour"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="60dp"
+        android:ems="10"
+        android:hint="HH"
+        android:inputType="time"
+        android:maxLength="2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/colon2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
         android:text=":"
         android:textColor="@color/black"
         android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintTop_toTopOf="@id/hour"
         app:layout_constraintEnd_toStartOf="@+id/second"
         app:layout_constraintStart_toEndOf="@+id/minute" />
+
+    <EditText
+        android:id="@+id/minute"
+        android:layout_width="60dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:hint="MM"
+        android:inputType="time"
+        android:maxLength="2"
+        app:layout_constraintTop_toTopOf="@id/hour"
+        app:layout_constraintEnd_toStartOf="@+id/colon2"
+        app:layout_constraintStart_toEndOf="@+id/colon" />
+
+    <TextView
+        android:id="@+id/colon"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:text=":"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/minute"
+        app:layout_constraintStart_toEndOf="@+id/hour"
+        app:layout_constraintTop_toTopOf="@+id/hour" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

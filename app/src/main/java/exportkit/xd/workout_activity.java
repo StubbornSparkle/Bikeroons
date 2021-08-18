@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.net.InetAddress;
+
 public class workout_activity extends Activity {
 
     private View view;
@@ -35,7 +37,7 @@ public class workout_activity extends Activity {
         final View popupView = getLayoutInflater().inflate(R.layout.caloriespopup, null);
         height = (EditText) popupView.findViewById(R.id.height);
         weight = (EditText) popupView.findViewById(R.id.weight);
-        caloriestxt = (EditText) popupView.findViewById(R.id.calories);
+//        caloriestxt = (EditText) popupView.findViewById(R.id.calories);
 
         cancel = (Button) popupView.findViewById(R.id.cancel);
         save = (Button) popupView.findViewById(R.id.save);
@@ -43,14 +45,14 @@ public class workout_activity extends Activity {
         dialogBuilder.setView(popupView);
         dialog = dialogBuilder.create();
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = 1000;
-        lp.height = 1200;
-        lp.x=-170;
-        lp.y=100;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(dialog.getWindow().getAttributes());
+//        lp.width = 1000;
+//        lp.height = 800;
+//            lp.x=-170;
+//            lp.y=100;
+//        dialog.show();
+//        dialog.getWindow().setAttributes(lp);
         dialog.show();
 
         height.addTextChangedListener(new TextWatcher() {
@@ -151,6 +153,7 @@ public class workout_activity extends Activity {
         final View popupView = getLayoutInflater().inflate(R.layout.timepopup, null);
 
         hour = (EditText) popupView.findViewById(R.id.hour);
+        hour = (EditText) popupView.findViewById(R.id.hour);
         minute = (EditText) popupView.findViewById(R.id.minute);
         second = (EditText) popupView.findViewById(R.id.second);
 
@@ -213,14 +216,14 @@ public class workout_activity extends Activity {
         dialogBuilder.setView(popupView);
         dialog = dialogBuilder.create();
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = 1000;
-        lp.height = 800;
-        lp.x=-170;
-        lp.y=100;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(dialog.getWindow().getAttributes());
+//        lp.width = 1000;
+//        lp.height = 800;
+//        lp.x=-170;
+//        lp.y=100;
+//        dialog.show();
+//        dialog.getWindow().setAttributes(lp);
         dialog.show();
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -303,12 +306,12 @@ public class workout_activity extends Activity {
         dialogBuilder.setView(popupView);
         dialog=dialogBuilder.create();
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = 1000;
-        lp.height = 800;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(dialog.getWindow().getAttributes());
+//        lp.width = 1000;
+//        lp.height = 800;
+//        dialog.show();
+//        dialog.getWindow().setAttributes(lp);
         dialog.show();
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -358,10 +361,20 @@ public class workout_activity extends Activity {
         }
     }
 
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.workout);
 

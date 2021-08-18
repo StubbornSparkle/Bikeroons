@@ -6,41 +6,57 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
         android:text="Save"
-        app:layout_constraintEnd_toEndOf="@+id/numtext"
-        app:layout_constraintTop_toBottomOf="@+id/numtext" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/numtext"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
         android:text="cancel"
-        app:layout_constraintStart_toStartOf="@+id/numtext"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/numtext"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/numtext"
         android:layout_width="0dp"
-        android:layout_height="63dp"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="63dp"
-        android:layout_marginEnd="55dp"
-        android:layout_marginBottom="70dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
         android:gravity="center"
         android:inputType="number"
         android:textColor="@color/black"
         android:textSize="23dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

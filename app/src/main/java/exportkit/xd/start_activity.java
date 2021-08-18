@@ -58,6 +58,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -149,6 +150,16 @@ public class start_activity extends Activity {
 			}
 		}
 
+	public boolean isInternetAvailable() {
+		try {
+			InetAddress ipAddr = InetAddress.getByName("google.com");
+			return !ipAddr.equals("");
+
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 		@SuppressLint("WrongThread")
 		public void onCreate(Bundle savedInstanceState) {
 
@@ -156,7 +167,7 @@ public class start_activity extends Activity {
 			StrictMode.setThreadPolicy(policy);
 
 			super.onCreate(savedInstanceState);
-			if(internetIsConnected()){
+			if(isInternetAvailable()){
 
 				startService();
 

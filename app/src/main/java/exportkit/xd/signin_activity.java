@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +32,7 @@ import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.util.MapTileIndex;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +64,20 @@ public class signin_activity extends Activity {
         //System.exit(0);
     }
 
-    public boolean internetIsConnected() {
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    public boolean isInternetAvailable() {
         try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }
@@ -81,7 +93,7 @@ public class signin_activity extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        if( internetIsConnected()){
+        if( isInternetAvailable()){
 
             setContentView(R.layout.signin);
 
@@ -101,7 +113,7 @@ public class signin_activity extends Activity {
             password = (EditText) findViewById(R.id.password);
 
             forgot = (Button) findViewById(R.id.forgot);
-            forgot.setVisibility(View.GONE);
+//            forgot.setVisibility(View.GONE);
             forgot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -123,7 +135,7 @@ public class signin_activity extends Activity {
                         //Route r = new Route();
                         //r.doInBackground();
 
-                        //startActivity(new Intent(signin_activity.this, start_activity.class));
+//                        startActivity(new Intent(signin_activity.this, start_activity.class));
                         // PostData pd = new PostData();
 
                         //pd.doInBackground(inputs);
@@ -131,6 +143,7 @@ public class signin_activity extends Activity {
                         //Toast.makeText(signin_activity.this,  response.getStatusLine().toString(), Toast.LENGTH_LONG).show();
                     }
                 });
+
             registerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,6 +151,7 @@ public class signin_activity extends Activity {
 
                 }
             });
+
         }else{
 
             setContentView(R.layout.nointernet);
@@ -207,7 +221,14 @@ public class signin_activity extends Activity {
                 editor.apply();
                 editor.commit();
 
-                startActivity(new Intent(signin_activity.this, start_activity.class));
+            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 502 Bad Gateway")){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(signin_activity.this, "Bad connection!", Toast.LENGTH_LONG).show();
+                    }
+                });
 
             }
 
@@ -241,8 +262,8 @@ public class signin_activity extends Activity {
         protected void onPostExecute(Void result) {
             // do UI work here
             if (loading3.isShowing()) {
+                startActivity(new Intent(signin_activity.this, start_activity.class));
                 loading3.dismiss();
-
             }
         }
     }

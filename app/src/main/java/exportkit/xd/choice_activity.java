@@ -21,10 +21,12 @@ import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 
 import org.apache.http.HttpResponse;
@@ -48,6 +50,7 @@ import org.osmdroid.views.overlay.Marker;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -87,15 +90,26 @@ import okhttp3.Response;
 		stopService();
 		startActivity(new Intent(choice_activity.this, start_activity.class));
 	}
-	public boolean internetIsConnected() {
-		try {
-			String command = "ping -c 1 google.com";
-			return (Runtime.getRuntime().exec(command).waitFor() == 0);
-		} catch (Exception e) {
-			return false;
-		}
-	}
 
+
+//	public boolean internetIsConnected() {
+//		try {
+//			String command = "ping -c 1 google.com";
+//			return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//		} catch (Exception e) {
+//			return false;
+//		}
+//	}
+
+		public boolean isInternetAvailable() {
+			try {
+				InetAddress ipAddr = InetAddress.getByName("google.com");
+				return !ipAddr.equals("");
+
+			} catch (Exception e) {
+				return false;
+			}
+		}
 
 	@SuppressLint("WrongThread")
 	@Override
@@ -106,7 +120,7 @@ import okhttp3.Response;
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 
-		if(internetIsConnected()){
+		if(isInternetAvailable()){
 
 			setContentView(R.layout.choice);
 
@@ -115,7 +129,6 @@ import okhttp3.Response;
 			transportation = (Button) findViewById(R.id.transportationBtn);
 			settingsBtn = (Button) findViewById(R.id.settingsBtn);
 			exercise = (Button) findViewById(R.id.exerciseBtn);
-
 			park = (Button) findViewById(R.id.park);
 			locate = (Button) findViewById(R.id.locate);
 			remove = (Button) findViewById(R.id.remove);
