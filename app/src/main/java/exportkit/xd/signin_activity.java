@@ -203,7 +203,6 @@ public class signin_activity extends Activity {
         @Override
         protected void onPostExecute(String result) {
 
-
             if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 500 Internal Server Error")) {
 
                 runOnUiThread(new Runnable() {
@@ -222,6 +221,7 @@ public class signin_activity extends Activity {
                 editor.apply();
                 editor.commit();
 
+                startActivity(new Intent(signin_activity.this, start_activity.class));
             }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 502 Bad Gateway")){
 
                 runOnUiThread(new Runnable() {
@@ -263,7 +263,7 @@ public class signin_activity extends Activity {
         protected void onPostExecute(Void result) {
             // do UI work here
             if (loading3.isShowing()) {
-                startActivity(new Intent(signin_activity.this, start_activity.class));
+
                 loading3.dismiss();
             }
         }

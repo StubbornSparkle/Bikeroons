@@ -35,6 +35,7 @@ import androidx.annotation.WorkerThread;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.jcraft.jsch.ChannelExec;
@@ -50,6 +51,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.osmdroid.util.GeoPoint;
@@ -80,7 +82,6 @@ public class start_activity extends Activity {
 
 		private AlertDialog.Builder dialogBuilder;
 		private AlertDialog dialog, loading;
-
 
 		private Button signout, cancel,go,ok;
 
@@ -1041,14 +1042,11 @@ public class start_activity extends Activity {
 				try (Response responsee = client.newCall(request).execute()) {
 					FetchedBikeID = responsee.body().string();
 
-					Log.d("checkmepls", "lpppppppppppppl");
 					//Log.d("checkmepls", FetchedBikeID+" lol wala eh?");
-					if (!responsee.message().equals("OK")) {
-
-						Log.d("checkmepls", "lel");
+					/*if (!responsee.message().equals("OK")) {
 
 						//cancel(true);
-					}
+					}*/
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1061,12 +1059,20 @@ public class start_activity extends Activity {
 			if (loading3.isShowing()) {
 				loading3.dismiss();
 
-				Log.d("checkmepls", "da5alt444");
 				if(!isCancelled()){
 
-					if(FetchedBikeID.charAt(0)=='"' && FetchedBikeID.charAt(1)=='"'){
-						Log.d("checkmepls", "da5alt");
+					Log.d("heeheee", FetchedBikeID);
+					try {
+						JSONObject bikeID = new JSONObject(FetchedBikeID);
+						FetchedBikeID = bikeID.getString("message");
 
+						Log.d("heeheee", "Hellooo "+bikeID.getString("message"));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+
+					//if(FetchedBikeID.charAt(0)=='"' && FetchedBikeID.charAt(1)=='"'){
+					if(FetchedBikeID.equals("")){
 						if(currentLocation.getLatitude()==0.0){
 							//		Log.d("checkmepls", "da5alt2");
 
@@ -1094,8 +1100,6 @@ public class start_activity extends Activity {
 						startActivity(intent);
 					}
 				}
-
-
 			}
 		}
 	}

@@ -93,7 +93,7 @@ import okhttp3.Response;
             url =getResources().getString(R.string.ngrok)+"/users/gimmenums/"+FetchedEmail;
 
             getNumbers pd = new getNumbers();
-            pd.doInBackground();
+            pd.execute();
 
 
             pwchange = (Button) findViewById(R.id.pwchange);

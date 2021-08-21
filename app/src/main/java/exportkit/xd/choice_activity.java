@@ -19,11 +19,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -84,6 +90,12 @@ import okhttp3.Response;
 	private IMapController mapController;
 	private GeoPoint currentLocation = new GeoPoint(0.0,0.0);
 
+	//////////////////////____________DIALOG STUFF____________//////////////////////
+	private Switch base, distance, time;
+	private EditText baseText, distanceText, timeText;
+	private Button start, cancel;
+	private TextView egp,egpkm,egph;
+	//////////////////////____________DIALOG STUFF____________//////////////////////
 	@Override
 	public void onBackPressed() {
 		//super.onBackPressed();
@@ -146,7 +158,8 @@ import okhttp3.Response;
 			test.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					startActivity(new Intent(choice_activity.this, rentBike_activity.class));
+					rentDialog();
+					//startActivity(new Intent(choice_activity.this, rentBike_activity.class));
 				}
 			});
 
@@ -272,6 +285,84 @@ import okhttp3.Response;
 			// Toast.makeText(this, "not working", Toast.LENGTH_SHORT).show();
 		}
 	}
+
+		public void rentDialog() {
+			dialogBuilder = new AlertDialog.Builder(this);
+
+			final View popupView = getLayoutInflater().inflate(R.layout.rentpopup, null);
+
+			base = (Switch) popupView.findViewById(R.id.switch1);
+			distance = (Switch) popupView.findViewById(R.id.switch2);
+			time = (Switch) popupView.findViewById(R.id.switch3);
+
+			baseText = (EditText) popupView.findViewById(R.id.baseText);
+			distanceText = (EditText) popupView.findViewById(R.id.distanceText);
+			timeText = (EditText) popupView.findViewById(R.id.timeText);
+
+			cancel = (Button) popupView.findViewById(R.id.cancel);
+			start = (Button) popupView.findViewById(R.id.start);
+
+			egp = (TextView) popupView.findViewById(R.id.egp);
+			egpkm = (TextView) popupView.findViewById(R.id.egpkm);
+			egph = (TextView) popupView.findViewById(R.id.egph);
+
+			base.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(base.isChecked()){
+						baseText.setVisibility(View.VISIBLE);
+						egp.setVisibility(View.VISIBLE);
+					}else{
+						baseText.setVisibility(View.GONE);
+						egp.setVisibility(View.GONE);
+					}
+				}
+			});
+
+			distance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(distance.isChecked()){
+						distanceText.setVisibility(View.VISIBLE);
+						egpkm.setVisibility(View.VISIBLE);
+					}else{
+						distanceText.setVisibility(View.GONE);
+						egpkm.setVisibility(View.GONE);
+					}
+				}
+			});
+
+			time.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(time.isChecked()){
+						timeText.setVisibility(View.VISIBLE);
+						egph.setVisibility(View.VISIBLE);
+					}else{
+						timeText.setVisibility(View.GONE);
+						egph.setVisibility(View.GONE);
+					}
+				}
+			});
+
+
+
+			dialogBuilder.setView(popupView);
+			dialog=dialogBuilder.create();
+
+			dialog.show();
+
+			cancel.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+
+			start.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+				}
+			});
+		}
 
 
 		private void createNotificationChannel() {
