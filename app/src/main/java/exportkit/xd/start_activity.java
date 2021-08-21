@@ -1061,7 +1061,6 @@ public class start_activity extends Activity {
 			if (loading3.isShowing()) {
 				loading3.dismiss();
 
-
 				Log.d("checkmepls", "da5alt444");
 				if(!isCancelled()){
 
@@ -1128,15 +1127,11 @@ public class start_activity extends Activity {
 		protected void onPostExecute(String result) {
 
 			if(FetchedBikeID.charAt(0)=='"' && FetchedBikeID.charAt(1)=='"'){
-
-
 				//	Log.d("checkmepls", "da5alt");
 
 				if(currentLocation.getLatitude()==0.0){
 					//		Log.d("checkmepls", "da5alt2");
-
 					createNotificationChannel();
-
 					//Toast.makeText(start_activity.this, "Please turn on your location", Toast.LENGTH_SHORT).show();
 
 				}else {
@@ -1152,8 +1147,7 @@ public class start_activity extends Activity {
 					locateNearBikes lnb = new locateNearBikes();
 					lnb.doInBackground();
 
-					//scanDialog();
-
+					scanDialog();
 					//if(QRcodeResult.equals());
 				}
 			}else{

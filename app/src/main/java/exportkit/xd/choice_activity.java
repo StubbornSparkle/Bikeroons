@@ -78,7 +78,7 @@ import okhttp3.Response;
 
 	private AlertDialog.Builder dialogBuilder;
 	private AlertDialog dialog;
-	private Button close;
+	private Button close, test;
 
 	private MapView map;
 	private IMapController mapController;
@@ -133,10 +133,23 @@ import okhttp3.Response;
 			locate = (Button) findViewById(R.id.locate);
 			remove = (Button) findViewById(R.id.remove);
 
+			test = (Button) findViewById(R.id.test);
+
+
 			sp = getSharedPreferences("session", Context.MODE_PRIVATE);
 			FetchedEmail = sp.getString("email","");
 
 			//locate.setVisibility(View.GONE);
+
+
+			test = (Button) findViewById(R.id.test);
+			test.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(choice_activity.this, rentBike_activity.class));
+				}
+			});
+
 
 			park.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -289,7 +302,6 @@ import okhttp3.Response;
 
 				//builder.setDefaults(-1);
 
-				Log.d("heehee","heehee4");
 				notificationManager.notify(1,builder.build());
 				//Notification notification = new Notification();
 
@@ -340,7 +352,6 @@ import okhttp3.Response;
 					//HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
 					HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok) + "/users/nullifybikeid");
 
-					Log.d("fenak", FetchedEmail);
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 					nameValuePairs.add(new BasicNameValuePair("email", FetchedEmail));
 					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));

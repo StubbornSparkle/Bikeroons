@@ -527,8 +527,6 @@ public class chooseBike_activity extends AppCompatActivity {
 
                 fullRes = responsee.body().string();
 
-                Log.d("garab kda", fullRes);
-
             } catch (Exception e) {
 
                 e.printStackTrace();

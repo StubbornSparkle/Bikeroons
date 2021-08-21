@@ -7,8 +7,8 @@
 
 	<string name="map_key">AIzaSyAgS3JP52XcB7rlJe4UMfuU7vevTqd2JVs</string>
 
-	<string name="ngrok">http://a761e061b7a7.ngrok.io</string>
-	<string name="ngrok2">http://2a61e078ccd4.ngrok.io</string>
+	<string name="ngrok">http://6999-185-94-192-205.ngrok.io</string>
+	<string name="ngrok2">http://0e12-185-94-192-205.ngrok.io</string>
     <string name="title_activity_ayhagatest">ayhagatest</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -18,5 +18,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="forgotpw"> <u>I forgot my password</u></string>
 
 </resources>

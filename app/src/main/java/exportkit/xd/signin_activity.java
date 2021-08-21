@@ -53,7 +53,7 @@ public class signin_activity extends Activity {
 
     private String[] arr = new String[2];
 
-    private Button forgot;
+    private TextView forgot;
 
    // private String emaill, passwordd;
 
@@ -112,7 +112,8 @@ public class signin_activity extends Activity {
             email = (EditText) findViewById(R.id.email);
             password = (EditText) findViewById(R.id.password);
 
-            forgot = (Button) findViewById(R.id.forgot);
+            forgot = (TextView) findViewById(R.id.forgot);
+
 //            forgot.setVisibility(View.GONE);
             forgot.setOnClickListener(new View.OnClickListener() {
                 @Override
