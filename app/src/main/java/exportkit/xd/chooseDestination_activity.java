@@ -47,6 +47,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -102,6 +103,17 @@ public class chooseDestination_activity extends  AppCompatActivity {
         try {
             String command = "ping -c 1 google.com";
             return (Runtime.getRuntime().exec(command).waitFor() == 0);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }
@@ -201,7 +213,7 @@ public class chooseDestination_activity extends  AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
             setContentView(R.layout.choosedestination);
 
             statusCheck();

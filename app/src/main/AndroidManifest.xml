@@ -120,6 +120,10 @@
             android:name=".rentBike_activity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".payment_activity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
 
         <service android:name=".LocationService" />
 

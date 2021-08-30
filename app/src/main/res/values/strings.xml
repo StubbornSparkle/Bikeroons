@@ -7,8 +7,8 @@
 
 	<string name="map_key">AIzaSyAgS3JP52XcB7rlJe4UMfuU7vevTqd2JVs</string>
 
-	<string name="ngrok">http://6617-185-94-192-156.ngrok.io</string>
-	<string name="ngrok2">http://4931-185-94-192-156.ngrok.io</string>
+	<string name="ngrok">https://dbb3-193-9-115-47.ngrok.io</string>
+	<string name="ngrok2">https://c703-193-9-115-47.ngrok.io</string>
 
     <string name="title_activity_ayhagatest">ayhagatest</string>
     <string name="prompt_email">Email</string>

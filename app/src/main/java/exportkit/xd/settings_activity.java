@@ -3,6 +3,7 @@
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 
@@ -31,8 +32,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +81,7 @@ import okhttp3.Response;
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.settings);
 
@@ -87,12 +90,11 @@ import okhttp3.Response;
 
             permission = (Button) findViewById(R.id.permission);
 
-
             sp = getSharedPreferences("session", Context.MODE_PRIVATE);
             FetchedEmail = sp.getString("email","");
             url =getResources().getString(R.string.ngrok)+"/users/gimmenums/"+FetchedEmail;
 
-            getNumbers pd = new getNumbers();
+            getNumbers pd = new getNumbers(settings_activity.this);
             pd.execute();
 
 
@@ -180,22 +182,42 @@ import okhttp3.Response;
          }
      }
 
+     public boolean isInternetAvailable() {
+         try {
+             InetAddress ipAddr = InetAddress.getByName("google.com");
+             return !ipAddr.equals("");
+
+         } catch (Exception e) {
+             return false;
+         }
+     }
+
+
     public void addButtons(){
         if(numbers!=null) {
-            l.removeAllViews();
-            for (int i = 0; i < numbers.size(); i++) {
-                Button button = new Button(getApplicationContext());
-                button.setText(numbers.get(i));
 
-                int finalI = i;
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        NumDialog(numbers.get(finalI));
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    l.removeAllViews();
+                    for (int i = 0; i < numbers.size(); i++) {
+                        Button button = new Button(getApplicationContext());
+                        button.setText(numbers.get(i));
+
+                        int finalI = i;
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                NumDialog(numbers.get(finalI));
+                            }
+                        });
+                        l.addView(button);
                     }
-                });
-                l.addView(button);
-            }
+
+                }
+            });
         }
     }
 
@@ -445,12 +467,22 @@ import okhttp3.Response;
          }
      }
 
+     private class getNumbers extends AsyncTask<Void, Void, Void> {
+         private ProgressDialog loading;
 
-
-     private class getNumbers extends AsyncTask<String, Void, String> {
+         public getNumbers(settings_activity activity) {
+             loading = new ProgressDialog(activity);
+         }
 
          @Override
-         protected String doInBackground(String... strings) {
+         protected void onPreExecute() {
+             loading.setMessage("Fetching your emergency numbers, please wait...");
+             loading.show();
+         }
+         @SuppressLint("WrongThread")
+         @Override
+         protected Void doInBackground(Void... args) {
+
              OkHttpClient client = new OkHttpClient();
              Request request = new Request.Builder().url(url).build();
 
@@ -467,13 +499,13 @@ import okhttp3.Response;
                      if(res.charAt(i)==','){
 
                          if(!num.equals(""))
-                            numbers.add(num);
+                             numbers.add(num);
                          num="";
                      }
                      if(res.charAt(i)==']'){
                          isnum = false;
                          if(!num.equals(""))
-                            numbers.add(num);
+                             numbers.add(num);
                          num="";
                          break;
                      }
@@ -488,6 +520,14 @@ import okhttp3.Response;
                  e.printStackTrace();
              }
              return null;
+         }
+         @Override
+         protected void onPostExecute(Void result) {
+             // do UI work here
+             if (loading.isShowing()) {
+
+                 loading.dismiss();
+             }
          }
      }
 

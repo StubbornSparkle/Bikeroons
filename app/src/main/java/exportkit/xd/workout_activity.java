@@ -37,7 +37,7 @@ public class workout_activity extends Activity {
         final View popupView = getLayoutInflater().inflate(R.layout.caloriespopup, null);
         height = (EditText) popupView.findViewById(R.id.height);
         weight = (EditText) popupView.findViewById(R.id.weight);
-//        caloriestxt = (EditText) popupView.findViewById(R.id.calories);
+        caloriestxt = (EditText) popupView.findViewById(R.id.calories);
 
         cancel = (Button) popupView.findViewById(R.id.cancel);
         save = (Button) popupView.findViewById(R.id.save);
@@ -112,6 +112,7 @@ public class workout_activity extends Activity {
             @Override
             public void onClick(View v) {
 
+
                 if (caloriestxt.getText().toString().equals("")) {
                     caloriestxt.setError("You must add a calorie goal to continue!");
                     //Toast.makeText(popupView.getContext(), "You must add a calorie goal to continue!", Toast.LENGTH_SHORT);
@@ -152,7 +153,6 @@ public class workout_activity extends Activity {
 
         final View popupView = getLayoutInflater().inflate(R.layout.timepopup, null);
 
-        hour = (EditText) popupView.findViewById(R.id.hour);
         hour = (EditText) popupView.findViewById(R.id.hour);
         minute = (EditText) popupView.findViewById(R.id.minute);
         second = (EditText) popupView.findViewById(R.id.second);

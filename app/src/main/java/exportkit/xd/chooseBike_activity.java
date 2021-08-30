@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -19,7 +20,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -129,6 +130,13 @@ public class chooseBike_activity extends AppCompatActivity {
     private SharedPreferences sp;
     private String FetchedEmail;
     private String[] newBike = new String[2];
+
+    private double averageSpeed = ((13.5+24.5)/2)*1.6; //averages of E-bike speed from mph to kmph
+                                                       //according to https://trec.pdx.edu/blog/are-e-bikes-faster-conventional-bicycles#:~:text=measured%20the%20speeds%20of%20bicycles,%2D25%20mph%20(Table%201.
+    private double maxSpeed = 24.5*1.6;
+    private boolean free = false;
+
+    private AlertDialog.Builder alertBuilder;
     /*  public void qrPopup() {
 
         dialogBuilder = new AlertDialog.Builder(this);
@@ -209,8 +217,6 @@ public class chooseBike_activity extends AppCompatActivity {
             blurBackground();
             blur.setVisibility(View.VISIBLE);
 
-            Log.d("nshof", "heehee");
-
             loading = (View) findViewById(R.id.loading);
             loading.setVisibility(View.VISIBLE);
             blur.setVisibility(View.VISIBLE);
@@ -244,6 +250,10 @@ public class chooseBike_activity extends AppCompatActivity {
             Context ctx = getApplicationContext();
             Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
             map = (MapView) findViewById(R.id.map);
+
+            IMapController mapController = map.getController();
+            mapController.setZoom(11.0);
+
             map.getTileProvider().clearTileCache();
             Configuration.getInstance().setCacheMapTileCount((short) 12);
             Configuration.getInstance().setCacheMapTileOvershoot((short) 12);
@@ -264,7 +274,6 @@ public class chooseBike_activity extends AppCompatActivity {
             locateRealBikes lrb = new locateRealBikes();
             lrb.execute();
 
-            Log.d("garab kda","lolli");
             final Handler handlerr = new Handler();
             handlerr.postDelayed(new Runnable() {
                 @Override
@@ -326,8 +335,13 @@ public class chooseBike_activity extends AppCompatActivity {
                             //arr[1] ="cd /home/pi/Desktop; python3 Trial_6.py "+ random+"; cd home/pi/lib_oled96; python3 display.py";
                             arr[1] =random;
 
-                            sendCommand sc = new sendCommand();
-                            sc.doInBackground();
+                            Intent intent = new Intent(chooseBike_activity.this, payment_activity.class);
+                            intent.putExtra("bikeName",chosenBike.getID());
+                            intent.putExtra("random",random);
+
+                            startActivity(intent);
+                            //sendCommand sc = new sendCommand();
+                            //sc.execute();
 
 
                            // Toast.makeText(chooseBike_activity.this, result,Toast.LENGTH_SHORT).show();
@@ -375,20 +389,20 @@ public class chooseBike_activity extends AppCompatActivity {
                 }
             });
 
-    }else{
+        }else{
 
-        setContentView(R.layout.nointernet);
+            setContentView(R.layout.nointernet);
 
-        view = (View) findViewById(R.id.view);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                startActivity(getIntent());
-            }
-        });
-        // Toast.makeText(this, "not working", Toast.LENGTH_SHORT).show();
-    }
+            view = (View) findViewById(R.id.view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    startActivity(getIntent());
+                }
+            });
+            // Toast.makeText(this, "not working", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -554,7 +568,14 @@ public class chooseBike_activity extends AppCompatActivity {
 
                         double[] utm = convert(36, x.getDouble("East"), x.getDouble("North"),true);
 
-                        Bike bike = new Bike(x.getString("Name"), new GeoPoint(utm[0], utm[1]));
+
+                        JSONArray pricesList = new JSONArray(x.getString("Price"));
+                        float Base = Float.parseFloat(pricesList.get(0).toString());
+                        float Distance = Float.parseFloat(pricesList.get(1).toString());
+                        float Time = Float.parseFloat(pricesList.get(2).toString());
+                        float[] prices = {Base,Distance,Time};
+
+                        Bike bike = new Bike(x.getString("Name"), new GeoPoint(utm[0], utm[1]),prices);
                         bikes.add(bike);
                     }
                 }
@@ -571,6 +592,7 @@ public class chooseBike_activity extends AppCompatActivity {
                     my_marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
                     my_marker.setPanToView(true);
+                    my_marker.setTitle(bikes.get(i).getBasePrice()+"");
                     //my_marker.setTitle("Available bike #"+i+1);
 
                    // my_marker.setTitle("Available bike #"+(i+1)+"\n"+df.format(distance)+" Km away");
@@ -615,9 +637,106 @@ public class chooseBike_activity extends AppCompatActivity {
                                 DecimalFormat df = new DecimalFormat("#.##");
                                 double distance = locationA.distanceTo(locationB)/1000.0;
 
+                               // Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nThis is "+bikes.get(finalI-1).getBasePrice(), Toast.LENGTH_LONG).show();
+                                double power = 0.0, estTime = 0.0, estDistance = 0.0, price = 0.0;
+                                DecimalFormat df2 = new DecimalFormat("#.#");
 
-                                Log.d("locations",distance+"");
-                                Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away", Toast.LENGTH_LONG).show();
+
+
+                                if((boolean)getIntent().getSerializableExtra("workout")){
+                                    Intent intent = new Intent(chooseBike_activity.this, workoutRide2_activity.class);
+
+
+                                    switch((String)getIntent().getSerializableExtra("type")){
+
+
+                                        case "calories":
+                                            int cals = Integer.parseInt((String) getIntent().getSerializableExtra("calories"));
+                                            //calories = ((Power * T(in hours)) / 4.18 ) / 0.24          all *3/4 because it's an electric bike
+
+                                            //average weight = 60.7
+                                            // T = (17.4 * cals) / P
+                                            power = (0.004 * averageSpeed * ((60.7+25)*9.80665));
+                                            estTime = ((17.4 * cals) / power)/3600;
+                                            estDistance = averageSpeed * estTime;
+
+
+                                            /*Double caloriesBurntPerSecond = ((((0.004 * averageSpeed * ((60.7+25)*9.80665))*(1/3600))/4.18)/0.24)*(3/4);
+                                            double seconds = cals / caloriesBurntPerSecond;
+                                            estDistance = (seconds/120) * averageSpeed;
+                                            */
+                                            price = getTotalPrice(bikes.get(finalI-1),estDistance,estTime);
+
+                                            Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nEstimated price: "+
+                                                    df2.format(price), Toast.LENGTH_LONG).show();
+
+                                            //TODO: calories based payment
+
+
+                                            break;
+
+                                        case "distance":
+
+                                            estDistance = Double.parseDouble((String) getIntent().getSerializableExtra("meter"));
+                                            estTime = estDistance/averageSpeed;
+
+                                            price = getTotalPrice(bikes.get(finalI-1),estDistance,estTime);
+
+                                            Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nEstimated price: "+
+                                                    df2.format(price), Toast.LENGTH_LONG).show();
+
+                                            //TODO: distance based payment
+                                            break;
+
+                                        case "time":
+
+                                            int totalTime = Integer.parseInt((String) getIntent().getSerializableExtra("hour")) + (Integer.parseInt((String) getIntent().getSerializableExtra("minute"))/60) + ((Integer.parseInt((String) getIntent().getSerializableExtra("second"))/120));
+                                            estDistance = averageSpeed * Double.parseDouble(totalTime+"");
+                                            estTime = Double.parseDouble(totalTime+"");
+
+                                            price = getTotalPrice(bikes.get(finalI-1),estDistance,estTime);
+
+                                            Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nEstimated price: "+
+                                                    df2.format(price), Toast.LENGTH_LONG).show();
+
+                                            //TODO: time based payment
+                                            break;
+
+                                        case "freestyle":
+
+                                            price = bikes.get(finalI-1).getBasePrice();
+
+                                            Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nEstimated price: Starts from "+
+                                                    df2.format(price) + " EGP", Toast.LENGTH_LONG).show();
+
+                                            break;
+                                    }
+                                    if(bikes.get(finalI-1).getBasePrice() > 0.1 && bikes.get(finalI-1).getTimePrice() > 0.1 &&bikes.get(finalI-1).getDistancePrice() > 0.1) { //it is not free
+                                        free = false;
+                                        //startActivity(new Intent(chooseBike_activity.this, payment_activity.class));
+                                       // paymentDialog();
+                                    }else
+                                        free = true;
+
+                                    //startActivity(intent);
+                                }else {
+                                    //TODO: destination based payment
+                                    //keda we need to know the time estimation
+                                    estDistance = Integer.parseInt((String) getIntent().getSerializableExtra("distance"));
+                                    estTime = estDistance/averageSpeed;
+                                    price = getTotalPrice(bikes.get(finalI-1),estDistance,estTime);
+
+                                    Toast.makeText(getApplicationContext(), "You have picked bike #"+ finalI+"\nIt is "+df.format(distance)+" km away\nEstimated price: "+
+                                            df2.format(price), Toast.LENGTH_LONG).show();
+
+                                    if(bikes.get(finalI-1).getBasePrice() > 0.1 && bikes.get(finalI-1).getTimePrice() > 0.1 &&bikes.get(finalI-1).getDistancePrice() > 0.1) { //it is not free
+                                        free = false;
+                                        //startActivity(new Intent(chooseBike_activity.this, payment_activity.class));
+                                        // paymentDialog();
+                                    }else
+                                        free = true;
+                                   // (Parcelable) getIntent().getSerializableExtra("dest"));
+                                }
 
                                 destChosen = true;
                                 //ToDo fix this
@@ -642,6 +761,73 @@ public class chooseBike_activity extends AppCompatActivity {
         }
     }
 
+
+
+    public void paymentDialog() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.payment, null);
+
+        dialogBuilder.setView(popupView);
+        dialog=dialogBuilder.create();
+
+        dialog.show();
+
+        CardForm cardForm = (CardForm) popupView.findViewById(R.id.card_form);
+        Button buy = (Button)popupView.findViewById(R.id.btnBuy);
+
+        cardForm.cardRequired(true)
+                .expirationRequired(true)
+                .cvvRequired(true)
+                .setup(chooseBike_activity.this);
+
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (cardForm.isValid()) {
+                    alertBuilder = new AlertDialog.Builder(chooseBike_activity.this);
+                    alertBuilder.setTitle("Confirm before purchase");
+                    alertBuilder.setMessage("Card number: " + cardForm.getCardNumber() + "\n" +
+                            "Card expiry date: " + cardForm.getExpirationDateEditText().getText().toString() + "\n" +
+                            "Card CVV: " + cardForm.getCvv());
+                    alertBuilder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            Toast.makeText(chooseBike_activity.this, "Thank you for purchase", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = alertBuilder.create();
+                    alertDialog.show();
+
+                } else {
+                    Toast.makeText(chooseBike_activity.this, "Please complete the form", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        /*
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });*/
+    }
+
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -663,7 +849,7 @@ public class chooseBike_activity extends AppCompatActivity {
                     ub.doInBackground();
 
                     updateBikeName ubn = new updateBikeName();
-                    ubn.doInBackground();
+                    ubn.execute();
 
 
                 }else{
@@ -701,7 +887,6 @@ public class chooseBike_activity extends AppCompatActivity {
 				// Execute HTTP Post Request
 				response = httpclient.execute(httppost);
 
-                onPostExecute("");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -891,8 +1076,8 @@ public class chooseBike_activity extends AppCompatActivity {
 
                     url = getResources().getString(R.string.ngrok2) + "/bikes";
 
-                    locateRealBikes lrb = new locateRealBikes();
-                    lrb.doInBackground();
+                    //locateRealBikes lrb = new locateRealBikes();
+                    //lrb.doInBackground();
                     //locateBikes();
 
                     //  Toast.makeText(chooseDestination3_activity.this, "myx is: "+myx+ " myy is: "+myy, Toast.LENGTH_SHORT).show();
@@ -1058,18 +1243,28 @@ public class chooseBike_activity extends AppCompatActivity {
     public class Bike{
         private String ID;
         private GeoPoint initialLoc;
+        private float[] Prices;
 
-        public Bike(String ID, GeoPoint initialLoc){
+        public Bike(String ID, GeoPoint initialLoc, float[] prices){
             this.ID = ID;
             this.initialLoc = initialLoc;
+            this.Prices = prices;
         }
 
         public String getID() {
             return ID;
         }
-
         public GeoPoint getInitialLoc() {
             return initialLoc;
+        }
+        public float getBasePrice(){
+            return this.Prices[0];
+        }
+        public float getDistancePrice(){
+            return this.Prices[1];
+        }
+        public float getTimePrice(){
+            return this.Prices[2];
         }
     }
 
@@ -1089,7 +1284,6 @@ public class chooseBike_activity extends AppCompatActivity {
                 String Name = arr[0];
                 String Command = arr[1];
 
-                Log.d("y3nieh", arr[0]+" lol "+arr[1]);
 
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
                 nameValuePairs.add(new BasicNameValuePair("Name", Name));
@@ -1099,7 +1293,6 @@ public class chooseBike_activity extends AppCompatActivity {
                 // Execute HTTP Post Request
                 response = httpclient.execute(httppost);
 
-                onPostExecute("");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1149,6 +1342,11 @@ public class chooseBike_activity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public double getTotalPrice(Bike bike, double distance, double time){
+
+        return bike.getBasePrice() + (bike.getDistancePrice()*distance) + (bike.getTimePrice()*time);
     }
 
 

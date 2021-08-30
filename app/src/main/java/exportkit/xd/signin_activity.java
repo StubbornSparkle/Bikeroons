@@ -186,7 +186,7 @@ public class signin_activity extends Activity {
                 String password = arr[1];
 
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(new BasicNameValuePair("email", email));
+                nameValuePairs.add(new BasicNameValuePair("email", email.toLowerCase()));
                 nameValuePairs.add(new BasicNameValuePair("password", password));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 

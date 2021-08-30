@@ -70,6 +70,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -113,9 +114,9 @@ public class ride_activity extends Activity implements Serializable {
 
     private BlurView blur;
 
-    Chronometer cmTimer;
-    Button btnResume, btnStop, btnPause;
-    long elapsedTime;
+    private Chronometer cmTimer;
+    private Button btnResume, btnStop, btnPause;
+    private long elapsedTime;
 
     private TextView ridePaused, speed, rotpermin;
 
@@ -167,9 +168,18 @@ public class ride_activity extends Activity implements Serializable {
     private boolean startGettingSpeed = false;
 
     private double wheelSize = 2.07; //26 inches in diameter to circumference in meter
-    getSpeed gs = new getSpeed();
+    private getSpeed gs = new getSpeed();
     //________________________________________________________________________________________________________________________
 
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,7 +188,7 @@ public class ride_activity extends Activity implements Serializable {
         StrictMode.setThreadPolicy(policy);
 
         super.onCreate(savedInstanceState);
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
                 setContentView(R.layout.ride);
 

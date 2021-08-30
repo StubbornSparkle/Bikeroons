@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.695" />
+        app:layout_constraintGuide_percent="0.61" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.82"
+        app:layout_constraintGuide_percent="0.78"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.909"
+        app:layout_constraintGuide_percent="0.9"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -141,10 +141,9 @@
         android:text="@string/forgotpw"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.991" />
+        app:layout_constraintVertical_bias="0.96" />
 
     <Button
         android:id="@+id/signinBtn"

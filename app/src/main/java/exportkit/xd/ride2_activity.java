@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -194,13 +195,23 @@ public class ride2_activity extends Activity implements Serializable {
         myLoc.setVisibility(View.GONE);
     }
 
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @SuppressLint("WrongThread")
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.ride);
 
