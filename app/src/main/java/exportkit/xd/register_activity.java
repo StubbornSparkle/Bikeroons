@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,10 +60,20 @@ public class register_activity extends Activity {
         startActivity(new Intent(register_activity.this, signin_activity.class));
     }
 
-    public boolean internetIsConnected() {
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    public boolean isInternetAvailable() {
         try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }
@@ -76,7 +87,7 @@ public class register_activity extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.register);
 

@@ -80,7 +80,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 
-public class chooseBike_activity extends AppCompatActivity {
+public class chooseBike_activity extends BaseActivity {
 
     private MapView map;
 
@@ -191,7 +191,7 @@ public class chooseBike_activity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
+
 
         if(isInternetAvailable()){
 
@@ -199,7 +199,7 @@ public class chooseBike_activity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
 
             setContentView(R.layout.choosebike);
-
+            super.onCreate(savedInstanceState);
             sp = getSharedPreferences("session", Context.MODE_PRIVATE);
             FetchedEmail = sp.getString("email","");
 
@@ -378,7 +378,7 @@ public class chooseBike_activity extends AppCompatActivity {
     }else{
 
         setContentView(R.layout.nointernet);
-
+            super.onCreate(savedInstanceState);
         view = (View) findViewById(R.id.view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,12 +402,12 @@ public class chooseBike_activity extends AppCompatActivity {
         dialogBuilder.setView(popupView);
         dialog=dialogBuilder.create();
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = 1000;
-        lp.height = 800;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(dialog.getWindow().getAttributes());
+//        lp.width = 1000;
+//        lp.height = 800;
+//        dialog.show();
+//        dialog.getWindow().setAttributes(lp);
         dialog.show();
 
         scanCode.setOnClickListener(new View.OnClickListener() {

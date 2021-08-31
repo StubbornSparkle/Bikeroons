@@ -28,6 +28,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.util.MapTileIndex;
 
@@ -37,12 +39,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class signin_activity extends Activity {
 
     private Button signinBtn;
     private Button registerBtn;
     private View view;
+    private String url,res;
 
     private HttpResponse response;
 
@@ -170,73 +177,107 @@ public class signin_activity extends Activity {
     }
 
 
-    public class Route extends AsyncTask<String, String, String> {
+//    public class Route extends AsyncTask<String, String, String> {
+//
+//        @SuppressLint("WrongThread")
+//        @Override
+//        protected String doInBackground(String... strings) {
+//            try {
+//
+//                // Create a new HttpClient and Post Header
+//                HttpClient httpclient = new DefaultHttpClient();
+//                //HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
+//                HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok) + "/users/login");
+//
+//                String email = arr[0];
+//                String password = arr[1];
+//
+//                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//                nameValuePairs.add(new BasicNameValuePair("email", email));
+//                nameValuePairs.add(new BasicNameValuePair("password", password));
+//                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//
+//                // Execute HTTP Post Request
+//                response = httpclient.execute(httppost);
+//
+//                onPostExecute("");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//
+//            if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 500 Internal Server Error")) {
+//
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(signin_activity.this, "Wrong e-mail or password! ", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//            } else if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 200 OK")) {
+//
+//                sp = getSharedPreferences("session", Context.MODE_PRIVATE);
+//                editor = sp.edit();
+//
+//
+//                editor.putString("email", email.getText().toString());
+//                editor.apply();
+//                editor.commit();
+//                url = getResources().getString(R.string.ngrok) + "/users/getname/" + email.getText().toString();
+//                startActivity(new Intent(signin_activity.this, start_activity.class));
+//
+//                startActivity(new Intent(signin_activity.this, start_activity.class));
+//            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 502 Bad Gateway")){
+//
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(signin_activity.this, "Bad connection!", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 404 Not Found")){
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(signin_activity.this, "404 Not Found!", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//
+//        }
+//    }
 
-        @SuppressLint("WrongThread")
+
+    private class getName extends AsyncTask<String, Void, String> {
+
         @Override
         protected String doInBackground(String... strings) {
-            try {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).build();
 
-                // Create a new HttpClient and Post Header
-                HttpClient httpclient = new DefaultHttpClient();
-                //HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
-                HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok) + "/users/login");
+            try (Response responsee = client.newCall(request).execute()) {
+                res = responsee.body().string();
 
-                String email = arr[0];
-                String password = arr[1];
+                JSONObject names = new JSONObject(res);
 
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(new BasicNameValuePair("email", email));
-                nameValuePairs.add(new BasicNameValuePair("password", password));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                // Execute HTTP Post Request
-                response = httpclient.execute(httppost);
+                editor.putString("firstName",names.getString("firstName"));
+                editor.putString("lastName",names.getString("lastName"));
+                editor.apply();
+                editor.commit();
+                System.out.println(names.getString("firstName") + " " + names.getString("lastName"));
 
-                onPostExecute("");
-            } catch (Exception e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
             return null;
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 500 Internal Server Error")) {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(signin_activity.this, "Wrong e-mail or password! ", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            } else if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 200 OK")) {
-
-                sp = getSharedPreferences("session", Context.MODE_PRIVATE);
-                editor = sp.edit();
-
-                editor.putString("email", email.getText().toString());
-                editor.apply();
-                editor.commit();
-
-                startActivity(new Intent(signin_activity.this, start_activity.class));
-            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 502 Bad Gateway")){
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(signin_activity.this, "Bad connection!", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-            }
-
-        }
     }
-
-
 
 
     private class YourAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -255,15 +296,91 @@ public class signin_activity extends Activity {
         @Override
         protected Void doInBackground(Void... args) {
 
-            Route r = new Route();
-            r.execute();
+//            Route r = new Route();
+//            r.execute();
+
+            try {
+
+                // Create a new HttpClient and Post Header
+                HttpClient httpclient = new DefaultHttpClient();
+                //HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
+                HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok) + "/users/login");
+
+                String email = arr[0];
+                String password = arr[1];
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("email", email));
+                nameValuePairs.add(new BasicNameValuePair("password", password));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Execute HTTP Post Request
+                response = httpclient.execute(httppost);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 500 Internal Server Error")) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(signin_activity.this, "Wrong e-mail or password! ", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            } else if (response != null && response.getStatusLine().toString().equals("HTTP/1.1 200 OK")) {
+
+                sp = getSharedPreferences("session", Context.MODE_PRIVATE);
+                editor = sp.edit();
+
+                url = getResources().getString(R.string.ngrok) + "/users/getname/" + email.getText().toString();
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(url).build();
+
+
+                try (Response responsee = client.newCall(request).execute()) {
+                    res = responsee.body().string();
+                    JSONObject names = new JSONObject(res);
+                    editor.putString("firstName",names.getString("firstName"));
+                    editor.putString("lastName",names.getString("lastName"));
+
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
+                editor.putString("email", email.getText().toString());
+                editor.apply();
+                editor.commit();
+
+                startActivity(new Intent(signin_activity.this, start_activity.class));
+
+            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 502 Bad Gateway")){
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(signin_activity.this, "Bad connection!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else if(response != null && response.getStatusLine().toString().equals("HTTP/1.1 404 Not Found")){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(signin_activity.this, "404 Not Found!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+
+
             return null;
         }
         @Override
         protected void onPostExecute(Void result) {
             // do UI work here
             if (loading3.isShowing()) {
-
                 loading3.dismiss();
             }
         }

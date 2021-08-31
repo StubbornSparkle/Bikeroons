@@ -47,13 +47,14 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
 
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-public class chooseDestination_activity extends  AppCompatActivity {
+public class chooseDestination_activity extends  BaseActivity {
 
     private GeoPoint dest;
 
@@ -98,10 +99,20 @@ public class chooseDestination_activity extends  AppCompatActivity {
         startActivity(new Intent(chooseDestination_activity.this, start_activity.class));
     }
 
-    public boolean internetIsConnected() {
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    public boolean isInternetAvailable() {
         try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }
@@ -199,11 +210,11 @@ public class chooseDestination_activity extends  AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        super.onCreate(savedInstanceState);
 
-        if(internetIsConnected()){
+
+        if(isInternetAvailable()){
             setContentView(R.layout.choosedestination);
-
+            super.onCreate(savedInstanceState);
             statusCheck();
 
             blur = (BlurView) findViewById(R.id.blur);
@@ -332,7 +343,7 @@ public class chooseDestination_activity extends  AppCompatActivity {
         }else{
 
             setContentView(R.layout.nointernet);
-
+            super.onCreate(savedInstanceState);
             view = (View) findViewById(R.id.view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

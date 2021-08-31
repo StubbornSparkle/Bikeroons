@@ -33,6 +33,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,7 @@ import okhttp3.Response;
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.settings);
 
@@ -171,10 +172,20 @@ import okhttp3.Response;
          }
      }
 
-     public boolean internetIsConnected() {
+//     public boolean internetIsConnected() {
+//         try {
+//             String command = "ping -c 1 google.com";
+//             return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//         } catch (Exception e) {
+//             return false;
+//         }
+//     }
+
+     public boolean isInternetAvailable() {
          try {
-             String command = "ping -c 1 google.com";
-             return (Runtime.getRuntime().exec(command).waitFor() == 0);
+             InetAddress ipAddr = InetAddress.getByName("google.com");
+             return !ipAddr.equals("");
+
          } catch (Exception e) {
              return false;
          }
@@ -213,12 +224,12 @@ import okhttp3.Response;
          dialogBuilder.setView(popupView);
          dialog=dialogBuilder.create();
 
-         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-         lp.copyFrom(dialog.getWindow().getAttributes());
-         lp.width = 1000;
-         lp.height = 800;
-         dialog.show();
-         dialog.getWindow().setAttributes(lp);
+//         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//         lp.copyFrom(dialog.getWindow().getAttributes());
+//         lp.width = 1000;
+//         lp.height = 800;
+//         dialog.show();
+//         dialog.getWindow().setAttributes(lp);
          dialog.show();
 
          cancel.setOnClickListener(new View.OnClickListener() {
@@ -305,12 +316,12 @@ import okhttp3.Response;
          dialogBuilder.setView(popupView);
          dialog=dialogBuilder.create();
 
-         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-         lp.copyFrom(dialog.getWindow().getAttributes());
-         lp.width = 1000;
-         lp.height = 800;
-         dialog.show();
-         dialog.getWindow().setAttributes(lp);
+//         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//         lp.copyFrom(dialog.getWindow().getAttributes());
+//         lp.width = 1000;
+//         lp.height = 800;
+//         dialog.show();
+//         dialog.getWindow().setAttributes(lp);
          dialog.show();
 
          cancel.setOnClickListener(new View.OnClickListener() {
@@ -355,12 +366,12 @@ import okhttp3.Response;
          dialogBuilder.setView(popupView);
          dialog=dialogBuilder.create();
 
-         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-         lp.copyFrom(dialog.getWindow().getAttributes());
-         lp.width = 1000;
-         lp.height = 800;
-         dialog.show();
-         dialog.getWindow().setAttributes(lp);
+//         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//         lp.copyFrom(dialog.getWindow().getAttributes());
+//         lp.width = 1000;
+//         lp.height = 800;
+//         dialog.show();
+//         dialog.getWindow().setAttributes(lp);
          dialog.show();
 
          edit.setOnClickListener(new View.OnClickListener() {

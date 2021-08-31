@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -195,7 +196,7 @@ public class workoutRide2_activity extends Activity implements Serializable {
 
         super.onCreate(savedInstanceState);
 
-        if(internetIsConnected()){
+        if(isInternetAvailable()){
 
             setContentView(R.layout.ride);
             btnResume = (Button) findViewById(R.id.resumeride);
@@ -1112,10 +1113,20 @@ public class workoutRide2_activity extends Activity implements Serializable {
     };
 
 
-    public boolean internetIsConnected() {
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    public boolean isInternetAvailable() {
         try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
         } catch (Exception e) {
             return false;
         }

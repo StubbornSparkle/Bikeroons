@@ -200,12 +200,12 @@ public class rideSummary_activity extends Activity {
         dialogBuilder.setView(popupView);
         dialog=dialogBuilder.create();
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width =  WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height =  WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+//        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//        lp.copyFrom(dialog.getWindow().getAttributes());
+//        lp.width =  WindowManager.LayoutParams.MATCH_PARENT;
+//        lp.height =  WindowManager.LayoutParams.MATCH_PARENT;
+//        dialog.show();
+//        dialog.getWindow().setAttributes(lp);
         dialog.show();
 
         map = (MapView) popupView.findViewById(R.id.map);

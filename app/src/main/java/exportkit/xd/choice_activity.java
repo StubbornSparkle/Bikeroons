@@ -65,7 +65,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-	public class choice_activity extends Activity {
+	public class choice_activity extends BaseActivity {
 
 	private Button settingsBtn, transportation, exercise, park, locate, remove;
 
@@ -80,7 +80,9 @@ import okhttp3.Response;
 
 	private HttpResponse response;
 	private String myBike;
-	private GeoPoint myBikeLoc;
+
+
+	private GeoPoint myBikeLoc=new GeoPoint(0.0, 0.0);;
 
 	private AlertDialog.Builder dialogBuilder;
 	private AlertDialog dialog;
@@ -127,7 +129,7 @@ import okhttp3.Response;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		super.onCreate(savedInstanceState);
+
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -135,7 +137,7 @@ import okhttp3.Response;
 		if(isInternetAvailable()){
 
 			setContentView(R.layout.choice);
-
+			super.onCreate(savedInstanceState);
 			startService();
 
 			transportation = (Button) findViewById(R.id.transportationBtn);
@@ -273,7 +275,7 @@ import okhttp3.Response;
 		}else{
 
 			setContentView(R.layout.nointernet);
-
+			super.onCreate(savedInstanceState);
 			view = (View) findViewById(R.id.view);
 			view.setOnClickListener(new View.OnClickListener() {
 				@Override
@@ -550,12 +552,12 @@ import okhttp3.Response;
 			dialogBuilder.setView(popupView);
 			dialog=dialogBuilder.create();
 
-			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-			lp.copyFrom(dialog.getWindow().getAttributes());
-			lp.width =  WindowManager.LayoutParams.MATCH_PARENT;
-			lp.height =  WindowManager.LayoutParams.MATCH_PARENT;
-			dialog.show();
-			dialog.getWindow().setAttributes(lp);
+//			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//			lp.copyFrom(dialog.getWindow().getAttributes());
+//			lp.width =  WindowManager.LayoutParams.MATCH_PARENT;
+//			lp.height =  WindowManager.LayoutParams.MATCH_PARENT;
+//			dialog.show();
+//			dialog.getWindow().setAttributes(lp);
 			dialog.show();
 
 			map = (MapView) popupView.findViewById(R.id.map);

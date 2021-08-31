@@ -71,7 +71,7 @@ import okhttp3.Response;
 
 import static exportkit.xd.chooseBike_activity.getAlphaNumericString;
 
-public class start_activity extends Activity {
+public class start_activity extends BaseActivity {
 
 	private static final int NOTIFICATION_ID = 121;
 	private Button settingsBtn;
@@ -105,51 +105,17 @@ public class start_activity extends Activity {
 		@Override
 		public void onBackPressed() {
 			//super.onBackPressed();
-			signoutDialog();
+			this.signoutDialog();
 		}
 
-		public void signoutDialog() {
-			dialogBuilder = new AlertDialog.Builder(this);
-
-			final View popupView = getLayoutInflater().inflate(R.layout.signoutpopup, null);
-
-			cancel = (Button) popupView.findViewById(R.id.cancel);
-			signout = (Button) popupView.findViewById(R.id.signout);
-
-			dialogBuilder.setView(popupView);
-			dialog=dialogBuilder.create();
-
-			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-			lp.copyFrom(dialog.getWindow().getAttributes());
-			lp.width = 1000;
-			lp.height = 800;
-			dialog.show();
-			dialog.getWindow().setAttributes(lp);
-			dialog.show();
-
-			cancel.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-				}
-			});
-
-			signout.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					startActivity(new Intent(start_activity.this, signin_activity.class));
-				}
-			});
-		}
-
-		public boolean internetIsConnected() {
-			try {
-				String command = "ping -c 1 google.com";
-				return (Runtime.getRuntime().exec(command).waitFor() == 0);
-			} catch (Exception e) {
-				return false;
-			}
-		}
+//		public boolean internetIsConnected() {
+//			try {
+//				String command = "ping -c 1 google.com";
+//				return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//			} catch (Exception e) {
+//				return false;
+//			}
+//		}
 
 	public boolean isInternetAvailable() {
 		try {
@@ -167,13 +133,13 @@ public class start_activity extends Activity {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 			StrictMode.setThreadPolicy(policy);
 
-			super.onCreate(savedInstanceState);
+
 			if(isInternetAvailable()){
 
 				startService();
 
 				setContentView(R.layout.start);
-
+				super.onCreate(savedInstanceState);
 				checkSystemWritePermission();
 
 				sp = getSharedPreferences("session", Context.MODE_PRIVATE);
@@ -270,7 +236,7 @@ public class start_activity extends Activity {
 			}else{
 
 				setContentView(R.layout.nointernet);
-
+				super.onCreate(savedInstanceState);
 				view = (View) findViewById(R.id.view);
 				view.setOnClickListener(new View.OnClickListener() {
 					@Override
@@ -351,12 +317,12 @@ public class start_activity extends Activity {
             dialogBuilder.setView(popupView);
             dialog=dialogBuilder.create();
 
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(dialog.getWindow().getAttributes());
-            lp.width = 1000;
-            lp.height = 800;
-            dialog.show();
-            dialog.getWindow().setAttributes(lp);
+//            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//            lp.copyFrom(dialog.getWindow().getAttributes());
+//            lp.width = 1000;
+//            lp.height = 800;
+//            dialog.show();
+//            dialog.getWindow().setAttributes(lp);
             dialog.show();
 
             go.setOnClickListener(new View.OnClickListener() {
@@ -422,13 +388,13 @@ public class start_activity extends Activity {
 
 			dialogBuilder.setView(popupView);
 			dialog=dialogBuilder.create();
-
-			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-			lp.copyFrom(dialog.getWindow().getAttributes());
-			lp.width = 1000;
-			lp.height = 800;
-			dialog.show();
-			dialog.getWindow().setAttributes(lp);
+//
+//			WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//			lp.copyFrom(dialog.getWindow().getAttributes());
+//			lp.width = 1000;
+//			lp.height = 800;
+//			dialog.show();
+//			dialog.getWindow().setAttributes(lp);
 			dialog.show();
 
 			ok.setOnClickListener(new View.OnClickListener() {
@@ -681,12 +647,12 @@ public class start_activity extends Activity {
 		dialogBuilder.setView(popupView);
 		dialog=dialogBuilder.create();
 
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-		lp.copyFrom(dialog.getWindow().getAttributes());
-		lp.width = 1000;
-		lp.height = 800;
-		dialog.show();
-		dialog.getWindow().setAttributes(lp);
+//		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+//		lp.copyFrom(dialog.getWindow().getAttributes());
+//		lp.width = 1000;
+//		lp.height = 800;
+//		dialog.show();
+//		dialog.getWindow().setAttributes(lp);
 		dialog.show();
 
 		scanCode.setOnClickListener(new View.OnClickListener() {
@@ -1018,7 +984,7 @@ public class start_activity extends Activity {
 	}
 
 
-	private class getUserBike extends AsyncTask<Void, Void, Void> {
+	public class getUserBike extends AsyncTask<Void, Void, Void> {
 		private ProgressDialog loading3;
 
 		public getUserBike(start_activity activity) {
@@ -1100,6 +1066,7 @@ public class start_activity extends Activity {
 						startActivity(intent);
 					}
 				}
+
 			}
 		}
 	}

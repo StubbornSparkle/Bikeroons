@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import java.net.InetAddress;
 
-public class workout_activity extends Activity {
+public class workout_activity extends BaseActivity {
 
     private View view;
 
@@ -346,14 +346,14 @@ public class workout_activity extends Activity {
     }
 
 
-    public boolean internetIsConnected() {
-        try {
-            String command = "ping -c 1 google.com";
-            return (Runtime.getRuntime().exec(command).waitFor() == 0);
-        } catch (Exception e) {
-            return false;
-        }
-    }
+//    public boolean internetIsConnected() {
+//        try {
+//            String command = "ping -c 1 google.com";
+//            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
     public boolean isInternetAvailable() {
         try {
@@ -367,11 +367,11 @@ public class workout_activity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
         if(isInternetAvailable()){
 
             setContentView(R.layout.workout);
-
+            super.onCreate(savedInstanceState);
             calories = (Button) findViewById(R.id.calories);
             time = (Button) findViewById(R.id.time);
             freestyle = (Button) findViewById(R.id.freestyle);
@@ -420,7 +420,7 @@ public class workout_activity extends Activity {
             });
         }else{
             setContentView(R.layout.nointernet);
-
+            super.onCreate(savedInstanceState);
             view = (View) findViewById(R.id.view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
