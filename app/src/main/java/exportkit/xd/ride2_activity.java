@@ -195,6 +195,16 @@ public class ride2_activity extends Activity implements Serializable {
         myLoc.setVisibility(View.GONE);
     }
 
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @SuppressLint("WrongThread")
     @Override
     public void onCreate(Bundle savedInstanceState) {

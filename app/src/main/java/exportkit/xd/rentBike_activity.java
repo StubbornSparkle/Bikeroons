@@ -1,15 +1,21 @@
 package exportkit.xd;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,6 +23,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -37,6 +45,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -56,7 +65,6 @@ import okhttp3.Response;
 
 public class rentBike_activity extends Activity {
 
-
     private MapView map;
     private IMapController mapController;
     private GeoPoint myBikeLoc = new GeoPoint(0.0,0.0), currentLocation = new GeoPoint(0.0,0.0);
@@ -68,6 +76,20 @@ public class rentBike_activity extends Activity {
 
     private HttpResponse response;
     private Button test;
+    private boolean locateMyBike= false;
+    private int mapSetupDone = 0;
+    private Marker tempMarker;
+
+    public void onBackPressed() {
+        mapSetupDone = 0;
+        stopRenting sr = new stopRenting(rentBike_activity.this);
+        sr.execute();
+
+        startActivity(new Intent(rentBike_activity.this, choice_activity.class));
+        //super.onBackPressed();
+        //stopService();
+    }
+
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -77,6 +99,17 @@ public class rentBike_activity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rentbike);
 
+       /* if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+
+                startService();
+            }
+        } else {
+            startService();
+        }*/
+
         sp = getSharedPreferences("session", Context.MODE_PRIVATE);
         FetchedEmail = sp.getString("email","");
 
@@ -84,7 +117,55 @@ public class rentBike_activity extends Activity {
 
         getUserBike gub = new getUserBike();
         gub.execute();
+
+
+        final Handler ha=new Handler();
+        ha.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //call function
+                if(locateMyBike){
+                    locateBike lb = new locateBike();
+                    lb.execute();
+                }
+                ha.postDelayed(this, 3000);
+            }
+        }, 1000);
     }
+
+
+
+    /*private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode,permissions,grantResults );
+        switch (requestCode){
+            case 1:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    startService();
+                }else{
+                    Toast.makeText(this, "Give me permission", Toast.LENGTH_LONG).show();
+                }
+        }
+    }*/
 
 
     public class LocationBroadcastReceiver extends BroadcastReceiver {
@@ -96,7 +177,6 @@ public class rentBike_activity extends Activity {
                 currentLocation.setLongitude(intent.getDoubleExtra("longitude", 0));
             }
         }
-
     }
 
     public class getUserBike extends AsyncTask<String, String, String> {
@@ -112,9 +192,8 @@ public class rentBike_activity extends Activity {
             try (Response responsee = client.newCall(request).execute()) {
 
                 //TODO  zabatti el fetchedbike ID deh pls lma el user server yshta8al
-                fetchedBikeID = responsee.body().string();
+                myBike = responsee.body().string();
 
-                onPostExecute("");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -122,10 +201,10 @@ public class rentBike_activity extends Activity {
         }
         @Override
         protected void onPostExecute(String result) {
-            myBike = fetchedBikeID;
-            Log.d("yallakda",myBike);
-            locateBike lb = new locateBike();
-            lb.execute();
+           // locateBike lb = new locateBike();
+            //lb.execute();
+
+            locateMyBike = true;
 
             //locate.setVisibility(View.VISIBLE);
             //locateBike lb = new locateBike();
@@ -182,6 +261,9 @@ public class rentBike_activity extends Activity {
                     mapController.setZoom(15.0);
 
                     Marker spot = new Marker(map);
+
+                    tempMarker = spot;
+
                     spot.setPosition(myBikeLoc);
                     spot.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                     spot.setTitle("Your bike is here");
@@ -203,7 +285,6 @@ public class rentBike_activity extends Activity {
                     map.getOverlays().add(me);
 
                     map.invalidate();
-
                 }
             });
             return null;
@@ -212,7 +293,9 @@ public class rentBike_activity extends Activity {
         protected void onPostExecute(Void result) {
             // do UI work here
             if (loading3.isShowing()) {
+
                 loading3.dismiss();
+                locateMyBike = true;
             }
         }
     }
@@ -225,13 +308,19 @@ public class rentBike_activity extends Activity {
         protected String doInBackground(String... strings) {
             try {
 
+                locateMyBike = false;
+
                 // Create a new HttpClient and Post Header
                 HttpClient httpclient = new DefaultHttpClient();
                 //HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
                 HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok2) + "/bikes/getbike");
 
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-                nameValuePairs.add(new BasicNameValuePair("Name", myBike.substring(1, myBike.length() - 1)));
+
+                JSONObject obj  = new JSONObject(myBike);
+                String bikeName = obj.getString("message");
+
+                nameValuePairs.add(new BasicNameValuePair("Name", bikeName));
                 httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
                 // Execute HTTP Post Request
@@ -252,19 +341,18 @@ public class rentBike_activity extends Activity {
 
                 //name of nearest bike! a5iran bgad!
 
-
                 if (jsonArray.getJSONObject(0) != null) {
 
                     JSONObject jo2 = (JSONObject) jsonArray.getJSONObject(0);
 
                     double[] location = convert(36, Double.parseDouble(jo2.get("East") + ""), Double.parseDouble(jo2.get("North") + ""), true);
 
+
+                    Log.d("ngarabyalla","THIS SHOULD CHANGE "+location[0]+", "+location[1]);
                     myBikeLoc = new GeoPoint(location[0], location[1]);
 
-                    //onPostExecute("");
                 } else {
                     Toast.makeText(rentBike_activity.this, "An error has occurred!\nTry again", Toast.LENGTH_SHORT).show();
-
                 }
 
 
@@ -276,44 +364,119 @@ public class rentBike_activity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
+            if(mapSetupDone < 1){
+                mapSetupDone++;
+                mapSetup ms = new mapSetup(rentBike_activity.this);
+                ms.execute();
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-            mapSetup ms = new mapSetup(rentBike_activity.this);
-            ms.execute();
+                        map.getOverlays().remove(tempMarker);
+
+                        Marker spot = new Marker(map);
+
+                        tempMarker = spot;
+
+                        spot.setPosition(myBikeLoc);
+                        spot.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                        spot.setTitle("Your bike is here");
+                        spot.setPanToView(true);
+
+                        spot.setIcon(getResources().getDrawable(R.drawable.ic_bikeloc));
+
+                        map.getOverlays().add(spot);
+                        map.invalidate();
+                    }
+                });
+
+                locateMyBike = true;
+            }
             //HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
         }
 
+    }
 
-        public class getUserBike extends AsyncTask<String, String, String> {
 
-            @SuppressLint("WrongThread")
-            @Override
-            protected String doInBackground(String... strings) {
+ /*   void startService(){
+        try{
+            LocationBroadcastReceiver receiver = new LocationBroadcastReceiver();
+            IntentFilter filter = new IntentFilter("ACT_LOC");
+            registerReceiver(receiver, filter);
+            Intent intent = new Intent(rentBike_activity.this, LocationService.class );
+            startService(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-                OkHttpClient client = new OkHttpClient();
+    void stopService(){
+        try{
+            LocationBroadcastReceiver receiver = new LocationBroadcastReceiver();
+            IntentFilter filter = new IntentFilter("ACT_LOC");
+            registerReceiver(receiver, filter);
+            Intent intent = new Intent(rentBike_activity.this, LocationService.class );
+            stopService(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 
-                Request request = new Request.Builder().url(getResources().getString(R.string.ngrok) + "/users/getuserbike/" + FetchedEmail).build();
 
-                try (Response responsee = client.newCall(request).execute()) {
 
-                    //TODO  zabatti el fetchedbike ID deh pls lma el user server yshta8al
-                    fetchedBikeID = responsee.body().string();
 
-                    onPostExecute("");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
+    private class stopRenting extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog loading;
+
+        public stopRenting(rentBike_activity activity) {
+            loading = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loading.setMessage("Loading, please wait...");
+            loading.show();
+        }
+        @Override
+        protected Void doInBackground(Void... args) {
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok2) + "/bikes/stopShareBike");
+
+
+                JSONObject obj = new JSONObject(myBike);
+                String bikeName = obj.getString("message");
+
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                nameValuePairs.add(new BasicNameValuePair("Name", bikeName));
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+                // Execute HTTP Post Request
+                response = httpclient.execute(httppost);
+
+            }catch(Exception e){
+                e.printStackTrace();
             }
 
-            @Override
-            protected void onPostExecute(String result) {
-                myBike = fetchedBikeID;
-                //locate.setVisibility(View.VISIBLE);
-                //locateBike lb = new locateBike();
-                //lb.doInBackground();
+            return null;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // do UI work here
+            if (loading.isShowing()) {
+
+                //locateMyBike = true;
+                loading.dismiss();
             }
         }
     }
+
+
 
 
     public double[] convert(int zone, double easting, double northing, boolean Northern){
@@ -382,3 +545,6 @@ public class rentBike_activity extends Activity {
 
 
 }
+
+
+//back = (String)getIntent().getSerializableExtra("back");

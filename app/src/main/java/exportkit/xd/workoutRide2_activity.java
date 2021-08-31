@@ -190,6 +190,18 @@ public class workoutRide2_activity extends Activity implements Serializable {
         myLoc.setVisibility(View.GONE);
     }
 
+
+    public boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
     @SuppressLint("WrongThread")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -233,7 +245,7 @@ public class workoutRide2_activity extends Activity implements Serializable {
             currentLocation = new GeoPoint(0.0,0.0);
 
             getUserBike gub = new getUserBike();
-            gub.doInBackground();
+            gub.execute();
 
             currentTime = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             currentDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
@@ -534,7 +546,7 @@ public class workoutRide2_activity extends Activity implements Serializable {
 
 
         }else{
-            setContentView(R.layout.nointernet);
+            setContentView(R.layout.accident);
             view = (View) findViewById(R.id.view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1373,7 +1385,6 @@ public class workoutRide2_activity extends Activity implements Serializable {
                 e.printStackTrace();
             }
 
-            onPostExecute("");
             return null;
         }
         @Override

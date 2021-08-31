@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,8 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
+
+import com.google.gson.JsonObject;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -86,7 +89,7 @@ import okhttp3.Response;
 
 	private AlertDialog.Builder dialogBuilder;
 	private AlertDialog dialog;
-	private Button close, test;
+	private Button close, rent;
 
 	private MapView map;
 	private IMapController mapController;
@@ -97,6 +100,9 @@ import okhttp3.Response;
 	private EditText baseText, distanceText, timeText;
 	private Button start, cancel;
 	private TextView egp,egpkm,egph;
+	private	float basePrice = 0;
+	private	float distancePrice = 0;
+	private	float timePrice = 0;
 	//////////////////////____________DIALOG STUFF____________//////////////////////
 	@Override
 	public void onBackPressed() {
@@ -105,7 +111,16 @@ import okhttp3.Response;
 		startActivity(new Intent(choice_activity.this, start_activity.class));
 	}
 
-
+		@Override
+		protected void onDestroy() {
+			dismissProgressDialog();
+			super.onDestroy();
+		}
+		private void dismissProgressDialog() {
+			if (dialog != null && dialog.isShowing()) {
+				dialog.dismiss();
+			}
+		}
 //	public boolean internetIsConnected() {
 //		try {
 //			String command = "ping -c 1 google.com";
@@ -147,7 +162,7 @@ import okhttp3.Response;
 			locate = (Button) findViewById(R.id.locate);
 			remove = (Button) findViewById(R.id.remove);
 
-			test = (Button) findViewById(R.id.test);
+			rent = (Button) findViewById(R.id.rent);
 
 
 			sp = getSharedPreferences("session", Context.MODE_PRIVATE);
@@ -156,8 +171,8 @@ import okhttp3.Response;
 			//locate.setVisibility(View.GONE);
 
 
-			test = (Button) findViewById(R.id.test);
-			test.setOnClickListener(new View.OnClickListener() {
+			rent = (Button) findViewById(R.id.rent);
+			rent.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					rentDialog();
@@ -184,6 +199,8 @@ import okhttp3.Response;
 					//park.
 					locate.setVisibility(View.GONE);
 					remove.setVisibility(View.GONE);
+					rent.setVisibility(View.GONE);
+
 				}else{
 					getUserBike gub = new getUserBike();
 					gub.doInBackground();
@@ -308,14 +325,25 @@ import okhttp3.Response;
 			egpkm = (TextView) popupView.findViewById(R.id.egpkm);
 			egph = (TextView) popupView.findViewById(R.id.egph);
 
+			baseText.setVisibility(View.INVISIBLE);
+			egp.setVisibility(View.INVISIBLE);
+			distanceText.setVisibility(View.INVISIBLE);
+			egpkm.setVisibility(View.INVISIBLE);
+			timeText.setVisibility(View.INVISIBLE);
+			egph.setVisibility(View.INVISIBLE);
+
 			base.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if(base.isChecked()){
 						baseText.setVisibility(View.VISIBLE);
 						egp.setVisibility(View.VISIBLE);
+
+						basePrice = Float.parseFloat(baseText.getText().toString());
 					}else{
-						baseText.setVisibility(View.GONE);
-						egp.setVisibility(View.GONE);
+						baseText.setVisibility(View.INVISIBLE);
+						egp.setVisibility(View.INVISIBLE);
+
+						basePrice = 0;
 					}
 				}
 			});
@@ -325,9 +353,13 @@ import okhttp3.Response;
 					if(distance.isChecked()){
 						distanceText.setVisibility(View.VISIBLE);
 						egpkm.setVisibility(View.VISIBLE);
+
+						distancePrice = Float.parseFloat(distanceText.getText().toString());
 					}else{
-						distanceText.setVisibility(View.GONE);
-						egpkm.setVisibility(View.GONE);
+						distanceText.setVisibility(View.INVISIBLE);
+						egpkm.setVisibility(View.INVISIBLE);
+
+						distancePrice = 0;
 					}
 				}
 			});
@@ -337,14 +369,16 @@ import okhttp3.Response;
 					if(time.isChecked()){
 						timeText.setVisibility(View.VISIBLE);
 						egph.setVisibility(View.VISIBLE);
+
+						timePrice = Float.parseFloat(timeText.getText().toString());
 					}else{
-						timeText.setVisibility(View.GONE);
-						egph.setVisibility(View.GONE);
+						timeText.setVisibility(View.INVISIBLE);
+						egph.setVisibility(View.INVISIBLE);
+
+						timePrice = 0;
 					}
 				}
 			});
-
-
 
 			dialogBuilder.setView(popupView);
 			dialog=dialogBuilder.create();
@@ -362,6 +396,16 @@ import okhttp3.Response;
 				@Override
 				public void onClick(View v) {
 
+					setPrices sp = new setPrices(choice_activity.this);
+					sp.execute();
+
+					/*Intent intent = new Intent(choice_activity.this, rentBike_activity.class);
+
+					intent.putExtra("base", basePrice);
+					intent.putExtra("distance", distancePrice);
+					intent.putExtra("time", timePrice);
+
+					startActivity(intent);*/
 				}
 			});
 		}
@@ -489,7 +533,12 @@ import okhttp3.Response;
 					HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok2) + "/bikes/getbike");
 
 					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-					nameValuePairs.add(new BasicNameValuePair("Name", myBike.substring(1,myBike.length()-1)));
+
+					JSONObject myBikeName = new JSONObject(myBike);
+					String myBikeN = myBikeName.getString("message");
+
+
+					nameValuePairs.add(new BasicNameValuePair("Name", myBikeN));
 					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 					// Execute HTTP Post Request
@@ -611,6 +660,72 @@ import okhttp3.Response;
 				}
 			});
 		}
+
+
+
+
+
+
+		private class setPrices extends AsyncTask<Void, Void, Void> {
+			private ProgressDialog loading;
+
+			public setPrices(choice_activity activity) {
+				loading = new ProgressDialog(activity);
+			}
+
+			@Override
+			protected void onPreExecute() {
+				loading.setMessage("Starting the bike renting process, please wait...");
+				loading.show();
+			}
+			@SuppressLint("WrongThread")
+			@Override
+			protected Void doInBackground(Void... args) {
+
+				try {
+
+					// Create a new HttpClient and Post Header
+					HttpClient httpclient = new DefaultHttpClient();
+					//HttpPost httppost = new HttpPost("http://localhost:9090/users/register");
+					HttpPost httppost = new HttpPost(getResources().getString(R.string.ngrok2) + "/bikes/editPrice");
+
+					JSONObject myBikeName = new JSONObject(myBike);
+					String myBikeN = myBikeName.getString("message");
+
+					String Base = basePrice+"";
+					String Distance = distancePrice+"";
+					String Time = timePrice+"";
+
+					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+					nameValuePairs.add(new BasicNameValuePair("Name", myBikeN));
+					nameValuePairs.add(new BasicNameValuePair("Base", Base));
+					nameValuePairs.add(new BasicNameValuePair("Distance", Distance));
+					nameValuePairs.add(new BasicNameValuePair("Time", Time));
+					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+					// Execute HTTP Post Request
+					response = httpclient.execute(httppost);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result) {
+				// do UI work here
+				if (loading.isShowing()) {
+
+					loading.dismiss();
+					startActivity(new Intent(choice_activity.this, rentBike_activity.class));
+				}
+			}
+		}
+
+
+
+
+
 
 
 		public double[] convert(int zone, double easting, double northing, boolean Northern){
