@@ -6,22 +6,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -31,14 +25,11 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -192,15 +183,7 @@ import okhttp3.Response;
          }
      }
 
-     public boolean isInternetAvailable() {
-         try {
-             InetAddress ipAddr = InetAddress.getByName("google.com");
-             return !ipAddr.equals("");
 
-         } catch (Exception e) {
-             return false;
-         }
-     }
 
 
     public void addButtons(){

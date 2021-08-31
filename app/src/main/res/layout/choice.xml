@@ -198,7 +198,7 @@
         android:id="@+id/rent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/rentbutton"
+
         app:layout_constraintBottom_toBottomOf="@id/guideline13"
         app:layout_constraintEnd_toStartOf="@id/guideline5"
         app:layout_constraintHorizontal_bias="0.133"

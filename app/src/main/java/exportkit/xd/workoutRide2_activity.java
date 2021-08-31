@@ -1134,15 +1134,7 @@ public class workoutRide2_activity extends Activity implements Serializable {
 //        }
 //    }
 
-    public boolean isInternetAvailable() {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            return !ipAddr.equals("");
 
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     private void blurBackground(){
         float radius=21f;
